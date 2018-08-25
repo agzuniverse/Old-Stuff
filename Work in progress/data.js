@@ -1,0 +1,683 @@
+//Snakes
+var stage=document.getElementById("game");
+stage.height=600;
+stage.width=1000;
+var mod=stage.getContext("2d");
+mod.font="20px Comic Sans MS";
+
+//Listeners
+document.addEventListener("keydown",press,false);
+document.addEventListener("click",clk,false);
+
+//Browser detection
+navigator.sayswho= (function(){
+    var N= navigator.appName, ua= navigator.userAgent, tem;
+    var M= ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
+    if(M && (tem= ua.match(/version\/([\.\d]+)/i))!== null) M[2]= tem[1];
+    M= M? [M[1], M[2]]: [N, navigator.appVersion, '-?'];
+ 
+    return M;
+})();
+ 
+var browser;
+if (navigator.sayswho[0] == "Firefox")
+	browser="f";
+else if (navigator.sayswho[0] == "Chrome")
+	browser="c";
+else if (navigator.sayswho[0] == "Safari")
+	browser="s";
+else  if (navigator.sayswho[0] == "Microsoft")
+	browser="m";
+else
+	browser="f";
+
+
+//variables
+var gridsize=20;
+var snake=new Array();
+var snake2=new Array();
+var length=5;
+var dir=3;
+var dir2=1;
+var xc;
+var yc;
+var xc2;
+var yc2;
+var yfood=true;
+var yfood2=true;
+var foochecker=false;
+var foox;
+var fooy;
+var foo2checker=false;
+var foox2;
+var fooy2;
+var fcount=0;
+var colorpicker=0;
+colorpicker=Math.floor(Math.random()*5);
+var colorpicker2=0;
+colorpicker2=Math.floor(Math.random()*5);
+while(colorpicker2==colorpicker)
+{
+colorpicker2=Math.floor(Math.random()*5);
+}
+var clicked=false;
+var mouseX=0;
+var mouseY=0;
+var scorecls=0;
+var scoredbl=0;
+var newhigh=false;
+var ender;
+var hscls=localStorage.getItem("scoreCLS");
+if(hscls==null)
+hscls=0;
+var hsdbl=localStorage.getItem("scoreDBL");
+if(hsdbl==null)
+hsdbl=0;
+var mode;
+var level=1;
+var loop;
+
+createsnake();
+length=5;
+createsnake2();
+
+//GAMELOOP CLASSIC
+function func()
+{
+if(mode!=1)
+mode=1;
+mod.fillStyle="black";
+mod.fillRect(0,0,stage.width,stage.height);
+mod.font="20px Comic Sans MS";
+mod.fillStyle="yellow";
+mod.fillText("Score : "+scorecls, 50,20);
+
+xc=snake[0].x;
+yc=snake[0].y;
+
+if(dir==1)
+xc--;
+if(dir==4)
+yc--;
+if(dir==3)
+xc++;
+if(dir==2)
+yc++;
+
+if(yc<0)
+yc=32;
+if(yc>32)
+yc=0;
+if(xc<0)
+xc=49;
+if(xc>49)
+xc=0;
+
+while(yfood==true)
+{
+if(yfood)
+{
+foochecker=false;
+foox=Math.floor(Math.random()*((stage.width-gridsize)/gridsize))
+fooy=Math.floor(Math.random()*((stage.height-gridsize)/gridsize))
+for(var k=0; k<=snake.length-1; k++)
+{
+if(snake[k].x==foox && snake[k].y==fooy)
+foochecker=true;
+}
+if(foochecker==false)
+yfood=false;
+}
+//End of while loop
+}
+
+if(xc==foox && yc==fooy)
+{
+yfood=true;
+scorecls++;
+var tail=new Object();
+tail.x=xc;
+tail.y=yc;
+snake.unshift(tail);
+}
+else
+{
+var tail=snake.pop();
+tail.x=xc;
+tail.y=yc;
+snake.unshift(tail);
+}
+
+for(var z=0; z<=snake.length-1; z++)
+{
+draw(snake[z].x, snake[z].y, gridsize,false,colorpicker);
+}
+draw(foox,fooy,gridsize,true,colorpicker);
+
+for(var a=1; a<=snake.length-1; a++)
+{
+if(snake[0].x==snake[a].x && snake[0].y==snake[a].y)
+clsgameover();
+}
+
+//End of gameloop classic
+}
+
+
+
+
+//GAMELOOP CAMPAIGN
+function func2()
+{
+if(mode!=2)
+mode=2;
+mod.fillStyle="black";
+mod.fillRect(0,0,stage.width,stage.height);
+mod.font="20px Comic Sans MS";
+mod.fillStyle="yellow";
+mod.fillText("Score : "+scorecls, 50,20);
+
+if(level==1)
+{
+mod.fillStyle="crimson";
+mod.fillRect(0,0,stage.width,20);
+mod.fillRect(0,stage.height-20,stage.width,20);
+mod.fillRect(0,0,20,stage.height);
+mod.fillRect(stage.width-20,0,20,stage.height);
+}
+
+xc=snake[0].x;
+yc=snake[0].y;
+
+if(dir==1)
+xc--;
+if(dir==4)
+yc--;
+if(dir==3)
+xc++;
+if(dir==2)
+yc++;
+
+if(yc<0)
+yc=32;
+if(yc>32)
+yc=0;
+if(xc<0)
+xc=49;
+if(xc>49)
+xc=0;
+
+while(yfood==true)
+{
+if(yfood)
+{
+foochecker=false;
+foox=Math.floor(Math.random()*((stage.width-gridsize)/gridsize))
+fooy=Math.floor(Math.random()*((stage.height-gridsize)/gridsize))
+for(var k=0; k<=snake.length-1; k++)
+{
+if(snake[k].x==foox && snake[k].y==fooy)
+foochecker=true;
+}
+
+if(level==1 && (fooy==0 || fooy==32 || foox==0 || foox==49))
+foochecker=true;
+
+if(foochecker==false)
+yfood=false;
+}
+//End of while loop
+}
+
+if(xc==foox && yc==fooy)
+{
+yfood=true;
+scorecls++;
+var tail=new Object();
+tail.x=xc;
+tail.y=yc;
+snake.unshift(tail);
+}
+else
+{
+var tail=snake.pop();
+tail.x=xc;
+tail.y=yc;
+snake.unshift(tail);
+}
+
+for(var z=0; z<=snake.length-1; z++)
+{
+draw(snake[z].x, snake[z].y, gridsize,false,colorpicker);
+}
+
+draw(foox,fooy,gridsize,true,colorpicker);
+
+for(var a=1; a<=snake.length-1; a++)
+{
+if(snake[0].x==snake[a].x && snake[0].y==snake[a].y)
+clsgameover();
+}
+
+if(level==1)
+{
+if(snake[0].y==0 || snake[0].y==32 || snake[0].x==0 || snake[0].x==49)
+clsgameover();
+}
+
+//End of gameloop campaign
+}
+
+
+
+
+
+//GAMELOOP DOUBLES
+function func3()
+{
+if(mode!=3)
+mode=3;
+fcount++;
+mod.fillStyle="black";
+mod.fillRect(0,0,stage.width,stage.height);
+mod.font="20px Comic Sans MS";
+mod.fillStyle="yellow";
+mod.fillText("Score : "+scoredbl, 50,20);
+
+xc=snake[0].x;
+yc=snake[0].y;
+xc2=snake2[0].x;
+yc2=snake2[0].y;
+
+if(dir==1)
+xc--;
+if(dir==4)
+yc--;
+if(dir==3)
+xc++;
+if(dir==2)
+yc++;
+
+if(yc<0)
+yc=32;
+if(yc>32)
+yc=0;
+if(xc<0)
+xc=49;
+if(xc>49)
+xc=0;
+
+if(dir2==1)
+xc2--;
+if(dir2==4)
+yc2--;
+if(dir2==3)
+xc2++;
+if(dir2==2)
+yc2++;
+
+if(yc2<0)
+yc2=32;
+if(yc2>32)
+yc2=0;
+if(xc2<0)
+xc2=49;
+if(xc2>49)
+xc2=0;
+
+//Snake Food
+while(yfood==true)
+{
+if(yfood)
+{
+foochecker=false;
+foox=Math.floor(Math.random()*((stage.width-gridsize)/gridsize))
+fooy=Math.floor(Math.random()*((stage.height-gridsize)/gridsize))
+for(var k=0; k<=snake.length-1; k++)
+{
+if(snake[k].x==foox && snake[k].y==fooy)
+foochecker=true;
+}
+for(var k=0; k<=snake2.length-1; k++)
+{
+if(snake2[k].x==foox && snake2[k].y==fooy)
+foochecker=true;
+}
+
+if(foochecker==false)
+yfood=false;
+}
+}
+//End of while loop
+
+//Food2
+while(yfood2==true)
+{
+if(yfood2)
+{
+foo2checker=false;
+foox2=Math.floor(Math.random()*((stage.width-gridsize)/gridsize))
+fooy2=Math.floor(Math.random()*((stage.height-gridsize)/gridsize))
+for(var k=0; k<=snake2.length-1; k++)
+{
+if(snake2[k].x==foox2 && snake2[k].y==fooy2)
+foo2checker=true;
+}
+for(var k=0; k<=snake.length-1; k++)
+{
+if(snake[k].x==foox2 && snake[k].y==fooy2)
+foo2checker=true;
+}
+if(foox2==foox && fooy2==fooy)
+foo2checker=true;
+
+if(foochecker==false)
+yfood2=false;
+}
+}
+//End of while loop2
+
+if(xc==foox && yc==fooy)
+{
+yfood=true;
+scoredbl++;
+var tail=new Object();
+tail.x=xc;
+tail.y=yc;
+snake.unshift(tail);
+}
+else if(xc==foox2 && yc==fooy2)
+{
+yfood2=true;
+scoredbl++;
+var tail=new Object();
+tail.x=xc;
+tail.y=yc;
+snake.unshift(tail);
+}
+else
+{
+var tail=snake.pop();
+tail.x=xc;
+tail.y=yc;
+snake.unshift(tail);
+}
+
+if(xc2==foox && yc2==fooy)
+{
+yfood=true;
+scoredbl++;
+var tail2=new Object();
+tail2.x=xc2;
+tail2.y=yc2;
+snake2.unshift(tail2);
+}
+else if(xc2==foox2 && yc2==fooy2)
+{
+yfood2=true;
+scoredbl++;
+var tail2=new Object();
+tail2.x=xc2;
+tail2.y=yc2;
+snake2.unshift(tail2);
+}
+else
+{
+var tail2=snake2.pop();
+tail2.x=xc2;
+tail2.y=yc2;
+snake2.unshift(tail2);
+}
+
+for(var z=0; z<=snake.length-1; z++)
+{
+draw(snake[z].x, snake[z].y, gridsize,false,colorpicker);
+}
+for(var z=0; z<=snake2.length-1; z++)
+{
+draw(snake2[z].x, snake2[z].y, gridsize,false,colorpicker2);
+}
+draw(foox,fooy,gridsize,true,colorpicker);
+draw(foox2,fooy2,gridsize,true,colorpicker2);
+
+for(var a=1; a<=snake.length-1; a++)
+{
+if(snake[0].x==snake[a].x && snake[0].y==snake[a].y)
+clsgameover();
+}
+if(fcount>2)
+{
+for(var a=1; a<=snake2.length-1; a++)
+{
+if(snake2[0].x==snake2[a].x && snake2[0].y==snake2[a].y)
+clsgameover();
+}
+}
+for(var a=0; a<=snake2.length-1; a++)
+{
+if(snake[0].x==snake2[a].x && snake[0].y==snake2[a].y)
+clsgameover();
+}
+for(var a=0; a<=snake.length-1; a++)
+{
+if(snake2[0].x==snake[a].x && snake2[0].y==snake[a].y)
+clsgameover();
+}
+
+
+//End of gameloop doubles
+}
+
+//Functions
+function clsgameover()
+{
+clearInterval(loop);
+mod.textAlign="center";
+mod.fillStyle="black";
+mod.fillRect(275,100,450,450);
+mod.fillStyle="white";
+mod.font="30px Comic Sans MS";
+
+if(mode==1)
+{
+mod.fillText("Game over! Your Score : "+scorecls,500,150);
+if(hscls<scorecls)
+{
+newhigh=true;
+hscls=scorecls;
+localStorage.setItem("scoreCLS",scorecls);
+}
+mod.fillText("High score : "+hscls,500,200);
+}
+
+if(mode==3)
+{
+mod.fillText("Game over! Your Score : "+scoredbl,500,150);
+if(hsdbl<scoredbl)
+{
+newhigh=true;
+hsdbl=scoredbl;
+localStorage.setItem("scoreDBL",scoredbl);
+}
+mod.fillText("High score : "+hsdbl,500,200);
+}
+
+if(newhigh)
+{
+mod.font="20px Comic Sans MS";
+mod.fillStyle="blue";
+mod.fillText("New highscore!",500,240);
+}
+mod.fillStyle="cyan";
+mod.fillRect(300,250,400,50);
+mod.fillRect(300,350,400,50);
+mod.fillRect(300,450,400,50);
+mod.fillStyle="black";
+mod.font="30px Comic Sans MS";
+mod.fillText("Play classic mode",500,285);
+mod.fillText("Play campaign mode",500,385);
+mod.fillText("Play doubles mode",500,485);
+clicked=false;
+ender=setInterval(ending,60);
+}
+
+function ending()
+{
+if(clicked)
+{
+clicked=false;
+
+if(hit(300,250,400,50,mouseX,mouseY))
+{
+reset();
+mode=1;
+clearInterval(ender);
+loop=setInterval(func,60);
+}
+
+if(hit(300,450,400,50,mouseX,mouseY))
+{
+reset();
+mode=3;
+clearInterval(ender);
+loop=setInterval(func3,60);
+}
+
+}
+}
+
+function reset()
+{
+gridsize=20;
+snake=[]
+snake2=[]
+length=5;
+dir=3;
+dir2=1;
+xc=0;
+yc=0;
+yfood=true;
+yfood2=true;
+foochecker=false;
+foox=0;
+fooy=0;
+foox2=0;
+fooy2=0;
+fcount=0;
+colorpicker=0;
+colorpicker=Math.floor(Math.random()*5);
+colorpicker2=0;
+colorpicker2=Math.floor(Math.random()*5);
+while(colorpicker2==colorpicker)
+{
+colorpicker2=Math.floor(Math.random()*5);
+}
+clicked=false;
+mouseX=0;
+mouseY=0;
+scorecls=0;
+scoredbl=0;
+newhigh=false;
+hscls=localStorage.getItem("scoreCLS");
+if(hscls==null)
+hscls=0;
+hsdbl=localStorage.getItem("scoreDBL");
+if(hsdbl==null)
+hsdbl=0;
+createsnake();
+createsnake2();
+}
+
+function hit(x,y,xi,yi,mx,my)
+{
+if(x<mx && x+xi>mx && y<my && y+yi>my)
+return true;
+}
+
+function draw(x,y,w,arg,clr)
+{
+mod.beginPath();
+mod.rect(x*w,y*w,w,w);
+mod.strokeStyle="black";
+mod.stroke();
+if(arg==false)
+{
+if(clr==0)
+mod.fillStyle="red";
+if(clr==1)
+mod.fillStyle="yellow";
+if(clr==2)
+mod.fillStyle="cyan";
+if(clr==3)
+mod.fillStyle="white";
+if(clr==4)
+mod.fillStyle="orange";
+}
+if(arg)
+mod.fillStyle="blue";
+mod.fill();
+
+
+}
+
+function createsnake()
+{
+for(var i=length-1; i>=0; i--)
+{
+var snakeobj=new Object();
+snakeobj.x=i+8;
+snakeobj.y=8;
+snake.push(snakeobj);
+}
+
+}
+
+function createsnake2()
+{
+for(var i=length-1; i>=0; i--)
+{
+var snakeobj2=new Object();
+snakeobj2.x=i+16;
+snakeobj2.y=16;
+snake2.push(snakeobj2);
+}
+
+}
+
+function press(event)
+{
+keycode=event.keyCode;
+if(keycode==37 && dir!=3)
+dir=1;
+if(keycode==38 && dir!=2)
+dir=4;
+if(keycode==39&& dir!=1)
+dir=3;
+if(keycode==40&& dir!=4)
+dir=2;
+if(String.fromCharCode(event.keyCode)=="A" && dir2!=3)
+dir2=1;
+if(String.fromCharCode(event.keyCode)=="W" && dir2!=2)
+dir2=4;
+if(String.fromCharCode(event.keyCode)=="D" && dir2!=1)
+dir2=3;
+if(String.fromCharCode(event.keyCode)=="S" && dir2!=4)
+dir2=2;
+}
+
+function clk(event)
+{
+if (browser == "f" || browser == "m")
+	{
+	mouseX = event.clientX - stage.offsetLeft + document.documentElement.scrollLeft;
+	mouseY = event.clientY - stage.offsetTop + document.documentElement.scrollTop;
+	}
+	else //"s" or "c"
+	{
+	mouseX = event.clientX - stage.offsetLeft + document.body.scrollLeft;
+	mouseY = event.clientY - stage.offsetTop + document.body.scrollTop;
+	}
+clicked=true;
+}
+
+//End

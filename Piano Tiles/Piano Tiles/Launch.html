@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head><title>Piano Tiles</title></head>
+<body>
+<canvas id="game">
+It appears you browser doesn't support HTML5! Please update your browser!
+</canvas>
+<div id="ui" style="position:absolute;  left:300px; width:500px; height:660px; background-color:yellow; text-align:center;">
+<h1 style="font-family: Comic Sans MS; font-size:40px; text-align:center;" >Piano Tiles</h1>
+<p style="text-align:center; font-family: Algerian;">This javascript rendition of the popular android and iOS game 'Piano Tiles(Don't tap the white tile)' allows you to play the 'rush' mode of Piano Tiles on you browser!"
+<br><br>
+All credit goes to Umami studios, the makers of the original Piano Tiles, for making such a great game!
+</p>
+<h2 style="text-align:center; font-family: Impact;">©AGZ Game Studios</h2>
+<button onclick=execute()>Start Game!</button>
+</div>
+<div id="gui" style="position:absolute;  left:300px; width:500px; height:660px; background-color:yellow; text-align:center;">
+<h1 style="font-family: Comic Sans MS; font-size:40px; text-align:center;" >Game over!</h1>
+<h2 id="message" style="text-align:center; font-family: Verdana;"></h2>
+<h2 id="message2" style="text-align:center; font-family: Verdana;"></h2>
+<h2 id="message3" style="text-align:center; font-family: Verdana;"></h2>
+<button onclick=restarter()>Play again!</button>
+</div>
+<script src="jquery-min.js"></script>
+
+<script src="data.js"></script>
+
+<script>
+var ender;
+var exitmsg;
+var exitmsg2;
+var GREENFLAG=false;
+var REDLIGHT=false;
+$("#game").hide();
+$("#ui").hide();
+$("#gui").hide();
+$("#ui").slideDown(1000);
+function execute()
+{
+$("#ui").slideUp(1000,function(){$("#game").slideDown(2000);});
+GREENFLAG=true;
+ender=setInterval(over,100);
+}
+
+function over()
+{
+if(REDLIGHT)
+interval();
+}
+
+//Game over message
+function interval()
+{
+clearInterval(ender);
+$("#game").slideUp(2000,function(){$("#gui").slideDown(1000);});
+exitmsg="Your score : "+score;
+exitmsg2=" High Score : "+high;
+document.getElementById("message").innerHTML=exitmsg;
+document.getElementById("message2").innerHTML=exitmsg2;
+if(score>=high)
+document.getElementById("message3").innerHTML="NEW HIGHSCORE!";
+}
+
+//Resetting variables
+function restarter()
+{
+ender;
+exitmsg;
+exitmsg2;
+GREENFLAG=false;
+REDLIGHT=false;
+document.getElementById("message3").innerHTML=" ";
+
+high=localStorage.getItem("HS");
+clicked=false;
+mouseX=0;
+mouseY=0;
+toggler=0;
+tiles=new Array();
+framecount=0;
+xIncr=300;
+rand=-1;
+score=0;
+incr=30;
+frmcnt=25;
+loop=setInterval(func,30);
+
+
+$("#game").hide();
+$("#ui").hide();
+$("#gui").hide();
+$("#ui").slideDown(1000);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Vigenere Cipher</title>
+</head>
+<body style="background-color: silver;">
+<script src="jquery-min.js"></script>
+<script>
+//Aesthetics:
+var view=false;
+$("document").ready(function(){
+$("#head").hide();
+$("#encrypter").hide();
+$("#decrypter").hide();
+$("#instructions").hide();
+$("#in1").hide();
+$("#in2").hide();
+$("#in3").hide();
+$("#head").fadeIn(1000);
+$("#encrypt_show").click(function(){$("#encrypter").slideToggle(1000);});
+$("#decrypt_show").click(function(){$("#decrypter").slideToggle(1000);});
+$("#inst").click(function(){
+if(view==false)
+{
+$("#instructions").fadeIn(500);
+$("#instructions").animate({height:"350px", width:"500px", top:"200px",left:"350px"},1000,function(){
+$("#in1").fadeIn(500);
+$("#in2").fadeIn(500);
+$("#in3").fadeIn(500);
+view=true;
+});
+}
+else if(view==true)
+{
+$("#in3").fadeOut(500);
+$("#in2").fadeOut(500);
+$("#in1").fadeOut(500);
+$("#instructions").animate({height:"175",width:"250",top:"275",left:"425"},1000,function(){$("#instructions").fadeOut(500);});
+view=false;
+}
+});
+});
+
+//Main Code:
+function encrypt_func()
+{
+var alpha="abcdefghijklmnopqrstuvwxyznnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn ABCDEFGHIJKLMNOPQRSTUVWXYZnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn1234567890";
+var e_input=$("#encrypt_input").val();
+var e_key=$("#encrypt_key").val();
+var e_in_no= new Array();
+var e_key_no= new Array();
+var e_sum= new Array();
+var e_out= new Array();
+e_key=e_key.toLowerCase();
+var key_check=false;
+for(var q=0; q<e_key.length;q++)
+{
+if(e_key.charAt(q)!="a" && e_key.charAt(q)!="b" && e_key.charAt(q)!="c" && e_key.charAt(q)!="d" && e_key.charAt(q)!="e" && e_key.charAt(q)!="f" && e_key.charAt(q)!="g" && e_key.charAt(q)!="h" && e_key.charAt(q)!="i" && e_key.charAt(q)!="j" && e_key.charAt(q)!="k" && e_key.charAt(q)!="l" && e_key.charAt(q)!="m" && e_key.charAt(q)!="n" && e_key.charAt(q)!="o" && e_key.charAt(q)!="p" && e_key.charAt(q)!="q" && e_key.charAt(q)!="r" && e_key.charAt(q)!="s" && e_key.charAt(q)!="t" && e_key.charAt(q)!="u" && e_key.charAt(q)!="v" && e_key.charAt(q)!="w" && e_key.charAt(q)!="x" && e_key.charAt(q)!="y" && e_key.charAt(q)!="z")
+key_check=true;
+}
+if(key_check==true)
+{
+alert("You have entered an invalid key!");
+return false;
+}
+for(var i=0; i<e_input.length;i++)
+{
+e_in_no[i]=(alpha.indexOf(e_input.charAt(i)))+1;
+}
+for(var x=0;x<e_key.length;x++)
+{
+e_key_no[x]=(alpha.indexOf(e_key.charAt(x)))+1;
+}
+for(var r=0, ky=0; r<e_input.length; r++)
+{
+e_sum[r]=e_in_no[r]+e_key_no[ky];
+if(e_sum[r]>26 && e_sum[r]<=52)
+e_sum[r]-=26;
+if(e_sum[r]>86)
+e_sum[r]-=26;
+if(e_in_no[r]==60)
+e_sum[r]=60;
+if(e_in_no[r]==121)
+e_sum[r]=121;
+if(e_in_no[r]==122)
+e_sum[r]=122;
+if(e_in_no[r]==123)
+e_sum[r]=123;
+if(e_in_no[r]==124)
+e_sum[r]=124;
+if(e_in_no[r]==125)
+e_sum[r]=125;
+if(e_in_no[r]==126)
+e_sum[r]=126;
+if(e_in_no[r]==127)
+e_sum[r]=127;
+if(e_in_no[r]==128)
+e_sum[r]=128;
+if(e_in_no[r]==129)
+e_sum[r]=129;
+if(e_in_no[r]==130)
+e_sum[r]=130;
+ky++;
+if(ky>=e_key.length)
+ky=0;
+}
+for(var o=0; o<e_sum.length;o++)
+{
+e_out[o]=alpha.charAt((e_sum[o])-1);
+}
+$("#encrypt_output").html(e_out.join(""));
+}
+
+function decrypt_func()
+{
+var alphabet="abcdefghijklmnopqrstuvwxyznnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn ABCDEFGHIJKLMNOPQRSTUVWXYZnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn1234567890";
+var d_input=$("#decrypt_input").val();
+var d_key=$("#decrypt_key").val();
+var d_in_no= new Array();
+var d_key_no= new Array();
+var d_sub= new Array();
+var d_out= new Array();
+d_key=d_key.toLowerCase();
+var d_kcheck=false;
+for(var kc=0; kc<d_key.length; kc++)
+{
+if(d_key.charAt(kc)!="a" && d_key.charAt(kc)!="b" && d_key.charAt(kc)!="c" && d_key.charAt(kc)!="d" && d_key.charAt(kc)!="e" && d_key.charAt(kc)!="f" && d_key.charAt(kc)!="g" && d_key.charAt(kc)!="h" && d_key.charAt(kc)!="i" && d_key.charAt(kc)!="j" && d_key.charAt(kc)!="k" && d_key.charAt(kc)!="l" && d_key.charAt(kc)!="m" && d_key.charAt(kc)!="n" && d_key.charAt(kc)!="o" && d_key.charAt(kc)!="p" && d_key.charAt(kc)!="q" && d_key.charAt(kc)!="r" && d_key.charAt(kc)!="s" && d_key.charAt(kc)!="t" && d_key.charAt(kc)!="u" && d_key.charAt(kc)!="v" && d_key.charAt(kc)!="w" && d_key.charAt(kc)!="x" && d_key.charAt(kc)!="y" && d_key.charAt(kc)!="z")
+d_kcheck=true;
+}
+if(d_kcheck==true)
+{
+alert("You have entered an invalid key!");
+return false;
+}
+for(var i=0; i<d_input.length; i++)
+{
+d_in_no[i]=(alphabet.indexOf(d_input.charAt(i)))+1;
+}
+for(var t=0; t<d_key.length; t++)
+{
+d_key_no[t]=(alphabet.indexOf(d_key.charAt(t)))+1;
+}
+for(var p=0, key=0; p<d_input.length; p++)
+{
+d_sub[p]=d_in_no[p]-d_key_no[key];
+if(d_sub[p]<=0)
+d_sub[p]+=26;
+if(d_sub[p]<=60 && d_sub[p]>26)
+d_sub[p]+=26;
+if(d_in_no[p]==60)
+d_sub[p]=60;
+if(d_in_no[p]==121)
+d_sub[p]=121;
+if(d_in_no[p]==122)
+d_sub[p]=122;
+if(d_in_no[p]==123)
+d_sub[p]=123;
+if(d_in_no[p]==124)
+d_sub[p]=124;
+if(d_in_no[p]==125)
+d_sub[p]=125;
+if(d_in_no[p]==126)
+d_sub[p]=126;
+if(d_in_no[p]==127)
+d_sub[p]=127;
+if(d_in_no[p]==128)
+d_sub[p]=128;
+if(d_in_no[p]==129)
+d_sub[p]=129;
+if(d_in_no[p]==130)
+d_sub[p]=130;
+key++;
+if(key>=d_key.length)
+key=0;
+}
+for(var g=0; g<d_sub.length; g++)
+{
+d_out[g]=alphabet.charAt((d_sub[g])-1);
+}
+$("#decrypt_output").html(d_out.join(""));
+}
+</script>
+<div id="head">
+<h1 style="font-family: Algerian; color:red;">Vigenere Cipher encrypter and decrypter<sub style="color:blue;">AGZ Studios</sub></h1>
+<span style="font-size:25px; font-family:Impact;" id="encrypt_show">Show/Hide encrypter</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="font-size:25px; font-family:Impact;" id="decrypt_show">Show/Hide decrypter</span>
+<br>
+<div id="encrypter" style="background-color: gold; height:300px; width: 400px; position: absolute;">
+&nbsp;&nbsp;<p style="font-family:Verdana"> Enter message to be encrypted:</p>
+&nbsp;&nbsp;<textarea type="text" id="encrypt_input"></textarea><br>
+&nbsp;&nbsp;<p style="font-family: Verdana">Enter keyword:</p>
+&nbsp;&nbsp;<input type="text" id="encrypt_key"><br><br>
+&nbsp;&nbsp;<button type="button" onclick=encrypt_func()>Encrypt</button>
+&nbsp;&nbsp;<p style="font-family:Verdana;" id="encrypt_output"></p>
+</div>
+<br>
+<div id="decrypter" style="background-color: gold; top: 120px;left: 500px; height:300px; width:400px; position:absolute;">
+&nbsp;&nbsp;<p style="font-family:Verdana"> Enter message to be decrypted:</p>
+&nbsp;&nbsp;<textarea type="text" id="decrypt_input"></textarea><br>
+&nbsp;&nbsp;<p style="font-family: Verdana">Enter keyword:</p>
+&nbsp;&nbsp;<input type="text" id="decrypt_key"><br><br>
+&nbsp;&nbsp;<button type="button" onclick=decrypt_func()>Decrypt</button>
+&nbsp;&nbsp;<p style="font-family:Verdana;" id="decrypt_output"></p>
+</div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<button type="button" id="inst">Show/Hide Instructions</button>
+<div id="instructions" style="background-color: cyan; position:absolute; top:275px; left:425px;height:175px; width: 250px; border-color:red; border-style: groove">
+<h1 id="in1" style="font-family:Impact; text-align:center ">Instructions</h1>
+<p id="in2">
+>> Enter sentence to be encoded and key into encrypter for encryption.<br>>> Enter encoded sentence and key into decrypter for decryption.
+<br><br>>>Special characters are replaced with lowercase "z" while encoding/decoding.<br>>> Alphabets in both upper and lower cases, numbers and spaces are encoded/decoded.
+<br><br>>>The key should be an easy to remember word.<br>>> It can contain upper or lowercase alphabets only.<br>>> The specialty of a Vigenere cipher is that it cannot be cracked without the key.
+<br><p id="in3" style="color:red; font-family:Algerian; text-align:center">©AGZ Studios 2013-2014</p>
+</p>
+</div>
+</div>
+</body>
+</html>

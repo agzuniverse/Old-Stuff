@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head><title>Chain Reaction</title></head>
+
+<body>
+
+<canvas id="game">
+It appears you browser doesn't support HTML5! Please update your browser!
+</canvas>
+
+<div id="ui" style="font-family:Comic Sans MS; background-color:yellow; height:600px">
+<h1 id="h1" style="color:red; text-align:center">Chain Reaction<sub style="font-size:20px; color:blue">AGZ Game Studios</sub></h1>
+<p id="p" style="position:absolute; left:300px; right:300px">This is a HTML5 version of the famous Android game Chain Reaction, brought to you by AGZ Game Studios.
+All credit goes to the original makers of Chain Reaction for creating such a great game.</p>
+<button type="button" id="launch" style="position:absolute; top:200px; left:600px;" onclick="startgame()">Play Game!</button>
+</div>
+
+<script src="jquery-min.js"></script>
+
+<script src="data.js"></script>
+
+<script>
+var loader;
+
+//Loading
+var snd=new Audio();
+snd.ready=false;
+snd.src="Assets/split.mp3";
+snd.onload=snd_load();
+function snd_load()
+{
+snd.ready=true;
+}
+
+var red1=new Image();
+red1.ready=false;
+red1.src="Assets/red1.png";
+red1.onload=red1_load();
+function red1_load()
+{
+red1.ready=true;
+}
+
+var red2=new Image()
+red2.ready=false;
+red2.src="Assets/red2.png";
+red2.onload=red2_load();
+function red2_load()
+{
+red2.ready=true;
+}
+
+var red3=new Image()
+red3.ready=false;
+red3.src="Assets/red3.png";
+red3.onload=red3_load();
+function red3_load()
+{
+red3.ready=true;
+}
+
+var grn1=new Image()
+grn1.ready=false;
+grn1.src="Assets/grn1.png";
+grn1.onload=grn1_load();
+function grn1_load()
+{
+grn1.ready=true;
+}
+
+var grn2=new Image()
+grn2.ready=false;
+grn2.src="Assets/grn2.png";
+grn2.onload=grn2_load();
+function grn2_load()
+{
+grn2.ready=true;
+}
+
+var grn3=new Image()
+grn3.ready=false;
+grn3.src="Assets/grn3.png";
+grn3.onload=grn3_load();
+function grn3_load()
+{
+grn3.ready=true;
+}
+
+var bg=new Image();
+bg.ready=false;
+bg.src="Assets/bg.jpg";
+bg.onload=bg_load();
+function bg_load()
+{
+bg.ready=true;
+}
+
+//Loading assets
+loader=setInterval(loading,30);
+
+
+//jQuery effects
+$("#game").hide();
+$("#ui").hide();
+$("#h1").hide();
+$("#p").hide();
+$("#launch").hide();
+
+$("#ui").slideToggle(1000,function(){
+$("#h1").fadeIn(500,function(){
+$("#p").fadeIn(500,function(){$("#launch").fadeIn(500);});
+});
+});
+function startgame()
+{
+$("#launch").fadeOut(500);
+$("#p").fadeOut(500);
+$("#h1").fadeOut(500,function(){
+$("#ui").slideUp(1000,function(){
+$("#game").slideDown(1000);
+});
+});
+}
+
+function loading()
+{
+if(red1.ready && red2.ready && red3.ready && grn1.ready && grn2.ready && grn3.ready && bg.ready)
+{
+clearInterval(loader);
+loop=setInterval(func,30);
+}
+}
+</script>
+
+</body>
+</html>
